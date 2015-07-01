@@ -1,0 +1,135 @@
+<h1 id='name' style="font-size:200px;margin-top:400px;margin-left:200px;">!Quan!</h1>
+<html>
+<header>
+	<script type="text/javascript">
+		
+		// using javascript oop
+		var swipeFunc = {
+			tag : '',
+			swipeleft : {},
+			swiperight : {},
+			swipeleftHandle 	: '',
+			swiperightHandle 	: '',
+			DISTANCE_THRESHOLD 	: 70,
+			touches : {
+				"touchstart": {"x":-1, "y":-1}, 
+				"touchmove" : {"x":-1, "y":-1}, 
+				"is_move" 	: false,
+				"direction" : "undetermined"
+			},
+			listen : function(event, handle) {
+				switch(event) {
+					case 'swipeleft':
+						swipeFunc.swipeleft 		= new CustomEvent('swipeleft');
+						swipeFunc.tag.addEventListener('swipeleft', swipeFunc.touchHandler, false);
+						swipeFunc.swipeleftHandle 	= handle;
+						break;
+
+					case 'swiperight':
+						swipeFunc.swiperight 		= new CustomEvent('swiperight');
+						swipeFunc.tag.addEventListener('swiperight', swipeFunc.touchHandler, false);
+						swipeFunc.swiperightHandle 	= handle;
+						break;
+
+					default:
+						break;
+				}
+			},
+			touchHandler: function(event) {
+				var touch;
+				if (typeof event !== 'undefined'){
+					if (typeof event.touches !== 'undefined') {
+						touch = event.touches[0];
+						switch (event.type) {
+							case 'touchstart':
+								swipeFunc.touches[event.type].x = touch.pageX;
+								break;
+
+							case 'touchmove':
+								swipeFunc.touches[event.type].x = touch.pageX;
+								swipeFunc.touches.is_move 		= true;
+								break;
+
+							case 'touchend':
+								var distance = swipeFunc.touches.touchstart.x - swipeFunc.touches.touchmove.x;
+
+								if (swipeFunc.touches.is_move &&  (Math.abs(distance) > swipeFunc.DISTANCE_THRESHOLD)) {
+									swipeFunc.touches.direction = distance < 0 ? "right" : "left";
+									
+									switch (swipeFunc.touches.direction) {
+										case "right":
+											swipeFunc.tag.dispatchEvent(swipeFunc.swiperight);
+											break;
+
+										case "left":
+											swipeFunc.tag.dispatchEvent(swipeFunc.swipeleft);
+											break;
+
+										default: 
+											break;
+									}
+								}
+
+								//reset
+								if (swipeFunc.touches.is_move)
+									swipeFunc.touches.is_move = false;
+
+								break;
+
+							default:
+								break;
+						}
+					} else {
+						switch (event.type) {
+							case 'swipeleft':
+								swipeFunc.swipeleftHandle(event);
+								break;
+
+							case 'swiperight':
+								swipeFunc.swiperightHandle(event);
+								break;
+
+							default:
+								break;
+						}
+					}
+				}
+			},
+			init: function(options) {
+				swipeFunc.tag 					= document.getElementById(options.id);
+				swipeFunc.DISTANCE_THRESHOLD 	= options.DISTANCE_THRESHOLD;
+
+				swipeFunc.tag.addEventListener('touchstart', swipeFunc.touchHandler, false);	
+				swipeFunc.tag.addEventListener('touchmove', swipeFunc.touchHandler, false);	
+				swipeFunc.tag.addEventListener('touchend', swipeFunc.touchHandler, false);
+			}
+		};
+
+		swipeFunc.init({
+			id 					: 'name',
+			DISTANCE_THRESHOLD 	: 70 
+		});
+
+		swipeFunc.listen('swipeleft', function(e) {
+			prev();
+		});
+
+		swipeFunc.listen('swiperight', function(e) {
+			next();
+		});
+
+		function prev() {
+			alert('prev');
+		}
+
+		function next() {
+			alert('next');
+		}
+
+	</script>
+</header>
+
+<body>
+
+</body>
+</html>

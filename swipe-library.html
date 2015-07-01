@@ -1,0 +1,146 @@
+<h1 id='name' style="font-size:200px;margin-top:400px;margin-left:200px;">!Quan!</h1>
+<html>
+<header>
+</header>
+
+<body>
+
+	<script type="text/javascript">
+			
+	// using javascript oop
+	function QSwiper(options)
+	{
+		//check options
+		if (typeof options.id == 'undefined') {
+			console.log('%cERROR: EMPRY ID', 'color:red;');
+		}
+
+		var swiper = {
+			tag 				: document.getElementById(options.id),
+			DISTANCE_THRESHOLD 	: 70,
+			swipeleft 			: {},
+			swiperight 			: {},
+			swipeleftHandle 	: '',
+			swiperightHandle 	: '',
+			touches : {
+				"touchstart": {"x":-1, "y":-1}, 
+				"touchmove" : {"x":-1, "y":-1}, 
+				"is_move" 	: false,
+				"direction" : "undetermined"
+			}
+		};
+
+		if (options.DISTANCE_THRESHOLD != 'undefined')
+			swiper.DISTANCE_THRESHOLD 	= options.DISTANCE_THRESHOLD;
+
+		this.touchHandler = function(event){
+			var touch;
+			if (typeof event !== 'undefined'){
+				if (typeof event.touches !== 'undefined') {
+					touch = event.touches[0];
+					switch (event.type) {
+						case 'touchstart':
+							swiper.touches[event.type].x = touch.pageX;
+							break;
+
+						case 'touchmove':
+							swiper.touches[event.type].x 	= touch.pageX;
+							swiper.touches.is_move 		= true;
+							break;
+
+						case 'touchend':
+							var distance = swiper.touches.touchstart.x - swiper.touches.touchmove.x;
+
+							if (swiper.touches.is_move &&  (Math.abs(distance) > swiper.DISTANCE_THRESHOLD)) {
+								swiper.touches.direction = distance < 0 ? "right" : "left";
+								
+								switch (swiper.touches.direction) {
+									case "right":
+										swiper.tag.dispatchEvent(swiper.swiperight);
+										break;
+
+									case "left":
+										swiper.tag.dispatchEvent(swiper.swipeleft);
+										break;
+
+									default: 
+										break;
+								}
+							}
+
+							//reset
+							if (swiper.touches.is_move)
+								swiper.touches.is_move = false;
+
+							break;
+
+						default:
+							break;
+					}
+				} else {
+					switch (event.type) {
+						case 'swipeleft':
+							swiper.swipeleftHandle(event);
+							break;
+
+						case 'swiperight':
+							swiper.swiperightHandle(event);
+							break;
+
+						default:
+							break;
+					}
+				}
+			}
+		}
+
+		this.listen = function(event, handle) {
+			switch(event) {
+				case 'swipeleft':
+					swiper.swipeleft 		= new CustomEvent('swipeleft');
+					swiper.tag.addEventListener('swipeleft', this.touchHandler, false);
+					swiper.swipeleftHandle 	= handle;
+					break;
+
+				case 'swiperight':
+					swiper.swiperight 		= new CustomEvent('swiperight');
+					swiper.tag.addEventListener('swiperight', this.touchHandler, false);
+					swiper.swiperightHandle 	= handle;
+					break;
+
+				default:
+					break;
+			}
+		};
+
+		swiper.tag.addEventListener('touchstart', this.touchHandler, false);	
+		swiper.tag.addEventListener('touchmove', this.touchHandler, false);	
+		swiper.tag.addEventListener('touchend', this.touchHandler, false);
+	}
+
+	var options = {
+		id 					: 'name',
+		DISTANCE_THRESHOLD 	: 70
+	};
+
+	var swiper = new QSwiper(options);
+
+	swiper.listen('swipeleft', function(e) {
+		prev();
+	});
+
+	swiper.listen('swiperight', function(e) {
+		next();
+	});
+
+	function prev() {
+		alert('prev');
+	}
+
+	function next() {
+		alert('next');
+	}
+
+	</script>
+</body>
+</html>
