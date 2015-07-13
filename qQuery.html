@@ -1,0 +1,106 @@
+<html>
+<head>
+</head>
+<body>
+	<h1 class="line even-line" id="line1"><span>Line 1</span></h1>
+	<h1 class="line odd-line" id="line2">Line 2</h1>
+	<h2 class="line even-line" id="line3"><span>Line 3</span><span>Line 4</span></h2>
+	<script type="text/javascript">
+
+		var qQuery = (function(document) {
+			function Element(jsObject) {
+				this.content = jsObject;
+			}
+
+			Element.prototype.check  = function(action) {
+				if (typeof this.content === "undefined") {
+					console.log('%cERROR: object do not have '.concat(action, ' method') , 'color:red;');
+					return false;
+				}
+
+				return true;
+			}
+
+			Element.prototype.createNode = function() {
+				console.log(this.content);
+			}
+
+			Element.prototype.children = function(selector) {
+				var query 		= new Query(this.createNode());
+
+				return query.get(selector);
+			}
+
+			Element.prototype.text	 = function(text) {
+				if (!this.check('text')) {
+					return;
+				}
+
+				if (typeof text === "undefined") {
+					return this.content.innerText;
+				} else {
+					this.content.innerText = text;
+				}
+			}
+
+			Element.prototype.html 	= function(html) {
+				if (!this.check('html')) {
+					return;
+				}
+
+				if (typeof html === "undefined") {
+					return this.content.innerHTML;
+				} else {
+					this.content.innerHTML = html;
+				}
+			}
+
+
+			function Query(document) {
+				this.document 		= document;
+				this.content 	= [];
+				this.length  	= 0;
+			}
+
+			Query.prototype.get 	= function (selector) {
+				if (typeof selector === "string") {
+					var objects = this.document.querySelectorAll(selector);
+					var length  = objects.length;
+					var i=0;
+
+					if (length > 1) {
+						for (i = 0; i<length; i++) {
+							this.content.push(new Element(objects[i]));
+							this.length++;
+						}
+					} else {
+						this.content = new Element(objects[0]);
+						this.length = 1;
+					}
+
+					return this.content;
+				} else {
+					console.log('%cERROR: selector is invalid', 'color:red;');
+				}
+			}
+
+			return new Query(document);
+		})(document);
+
+		var tags = qQuery.get('h1')[0].content.content;
+		console.log(tags);
+		// var text = tags.text();
+		// var html = tags.html();
+		
+
+
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+

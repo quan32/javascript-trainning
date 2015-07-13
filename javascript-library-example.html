@@ -3,13 +3,13 @@
 </head>
 <body>
 	<div id="main-content">
-		<h1 class="even-lines" id="line1"></h1>
-		<h2 class="odd-lines" id="line2"></h2>
-		<h2 class="even-lines" id="line3"></h2>
-		<h2 class="odd-lines" id="line4"></h2>
-		<h1 class="even-lines" id="line5"></h1>
-		<h1 class="odd-lines" id="line6"></h1>
-		<div class="even-lines" id="line7"></div>
+		<h1 class="even-lines" id="line1">Line1</h1>
+		<h2 class="odd-lines" id="line2">Line2</h2>
+		<h2 class="even-lines" id="line3">Line3</h2>
+		<h2 class="odd-lines" id="line4">Line4</h2>
+		<h1 class="even-lines" id="line5">Line5</h1>
+		<h1 class="odd-lines" id="line6">Line6</h1>
+		<div class="even-lines" id="line7">Line7</div>
 	</div>
 	<script type="text/javascript">
 		window.dome = (function() {
@@ -27,6 +27,11 @@
 					results.push(callback.call(this, this[i], i));
 				}
 				return results;
+			};
+
+			Dome.prototype.mapOne = function (callback) {
+			    var m = this.map(callback);
+			    return m.length > 1 ? m : m[0];
 			};
 
 			Dome.prototype.forEach = function(callback) {
@@ -205,7 +210,7 @@
 			return dome;
 		}());
 
-		var h1_tag_list = window.dome.get('h1.even-lines');
+		var h1_tag_list = dome.get('h1.even-lines');
 		
 		console.log(h1_tag_list);
 

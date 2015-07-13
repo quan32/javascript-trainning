@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CreateJS export from story</title>
+
+<script src="../../createjs/libs/cjs-0.5.0.min.js"></script>
+<script src="story.js"></script>
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<style>
+	@-webkit-keyframes loopanim {
+		0%   {-webkit-transform: rotate(0deg);}
+		100% {-webkit-transform: rotate(360deg);}
+	}
+	
+	.loopanimation {
+		-webkit-animation-name: loopanim;
+		-webkit-animation-duration: 1s;
+		-webkit-animation-timing-function: linear;
+		-webkit-animation-iteration-count: infinite;
+		-webkit-transform-origin: 0% 0%;
+	}
+</style>
+
+<script>
+var canvas, stage, exportRoot;
+
+function init() {
+	canvas = document.getElementById("canvas");
+	images = images||{};
+	
+	setupCreateJsContent();
+	
+	argument = {
+		url:"http://www.synk.co.jp",
+	};
+	
+	var manifest = [
+		{src:"images/_1.png", id:"_1"},
+		{src:"images/_2.png", id:"_2"},
+		{src:"images/_3.png", id:"_3"},
+		{src:"images/_4.png", id:"_4"},
+		{src:"images/_5.png", id:"_5"},
+		{src:"images/bg.png", id:"bg"},
+		{src:"images/starline_01.png", id:"starline_01"},
+		{src:"images/starline_02.png", id:"starline_02"},
+		{src:"images/txt_bg.png", id:"txt_bg"}
+	];
+
+	var loader = new createjs.PreloadJS(false);
+	loader.onFileLoad = handleFileLoad;
+	loader.onComplete = handleComplete;
+	loader.loadManifest(manifest);
+}
+
+function handleFileLoad(o) {
+	if (o.type == "image") { images[o.id] = o.result; }
+}
+
+function handleComplete() {
+	exportRoot = new lib.story();
+
+	stage = new createjs.Stage(canvas);
+	stage.addChild(exportRoot);
+	stage.update();
+	
+	adjustCanvas();
+	
+	createjs.Ticker.setFPS(30);
+	createjs.Ticker.addListener(stage);
+}
+</script>
+</head>
+
+<body onload="init();" style="background-color:#000000; margin:0px;">
+	<canvas id="canvas" width="240" height="320" style="background-color:#000000"></canvas>
+</body>
+</html>
